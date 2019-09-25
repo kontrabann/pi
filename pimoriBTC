@@ -1,0 +1,55 @@
+
+
+  GNU nano 3.2                                            /home/pi/Pimoroni/inky/examples/btcprice.py                                                       
+
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import urllib, json
+
+from inky import InkyPHAT
+
+inky_display = InkyPHAT("red")
+inky_display.set_border(inky_display.RED)
+
+from PIL import Image, ImageFont, ImageDraw
+
+print("""Inky pHAT: Bitcoin Price information.
+""")
+
+img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
+draw = ImageDraw.Draw(img)
+
+from font_fredoka_one import FredokaOne
+
+font = ImageFont.truetype(FredokaOne, 24)
+
+url = "https://api.coindesk.com/v1/bpi/currentprice.json"
+response = urllib.urlopen(url)
+data = json.loads(response.read())
+chartname = data['chartName']
+btcusd = data['bpi']['USD']['rate_float']
+btcgbp = data['bpi']['GBP']['rate_float']
+bitcoinprice = (chartname + '\n' + "$ " + str(btcusd) + '\n' + "GBP " + str(btcgbp))
+
+# Load our backdrop image
+img = Image.open("/home/pi/btc_yellow.png")
+draw = ImageDraw.Draw(img)
+
+draw.text((10, 10), bitcoinprice, inky_display.RED, font)
+inky_display.set_image(img)
+inky_display.show()
+
+
+
+
+
+
+
+
+
+
+
+                                                                     [ Read 37 lines ]
+^G Get Help      ^O Write Out     ^W Where Is      ^K Cut Text      ^J Justify       ^C Cur Pos       M-U Undo         M-A Mark Text    M-] To Bracket
+^X Exit          ^R Read File     ^\ Replace       ^U Uncut Text    ^T To Spell      ^_ Go To Line    M-E Redo         M-6 Copy Text    ^Q Where Was
